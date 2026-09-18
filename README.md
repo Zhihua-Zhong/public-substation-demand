@@ -1,6 +1,6 @@
 # Substation demand from public data
 
-Code for "How much of distribution-substation demand can public data determine? Evidence from 5,968 substations in Japan" (submitted to *Sustainable Energy, Grids and Networks*).
+Code for "How much of distribution-substation demand can public data determine? Evidence from 5,968 substations across all ten service areas of Japan" (submitted to *Sustainable Energy, Grids and Networks*).
 
 The paper estimates hourly net load, gross demand and behind-the-meter photovoltaics for 5,968 distribution substations across Japan's ten service areas over fiscal year 2024, using published data only, and then audits what those estimates support. This repository holds the estimator, the validation and the figure scripts.
 
@@ -30,7 +30,7 @@ Running the scripts therefore requires the reader to build the inputs of Table 1
 
 ## Citation
 
-Zhong, Z., Kawai, T., Iwafune, Y. How much of distribution-substation demand can public data determine? Evidence from 5,968 substations in Japan. Submitted, 2026.
+Zhong, Z., Kawai, T., Iwafune, Y. How much of distribution-substation demand can public data determine? Evidence from 5,968 substations across all ten service areas of Japan. Submitted, 2026.
 
 ## Licence
 
