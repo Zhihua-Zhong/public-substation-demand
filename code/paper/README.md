@@ -1,8 +1,10 @@
 # Index of `code/paper/`
 
-**The clean-up of 2026-07-29 deleted everything other than v6.5.** Every executable left here
-runs on workspace-relative paths (no hard-coded paths into the old working tree). The classification below rests on
-**measurement** (path checks and runs on the frozen database), not on what the index used to say.
+**The paper reports v6.6 run C**, the rerun of 2026-09-15. Scripts and outputs carry a `v65` or `v66` tag; a script
+named `_v65` may still be current, because the gate feeds it the v6.6 estimate through `PAPER_EST_FILE` and it writes
+a `_v66` output. Sections 3a and 3b below list what the rerun added. The clean-up of 2026-07-29 had already removed
+everything older than v6.5, and every executable left here runs on workspace-relative paths. The classification rests
+on **measurement** (path checks and runs on the frozen database), not on what the index used to say.
 
 The previous index wrongly listed four scripts as "ported". In fact they still used the old paths and did not run:
 `baselines_and_ci.py`, `check_saturation_and_hc.py`, `gen_headroom_v63.py` and `gen_evidence_v63.py`.
@@ -15,16 +17,16 @@ so it was deleted.
 
 | Script | Output |
 |---|---|
-| `calc_annual_monthly_v65.py` | `annual_monthly_v65.csv` |
-| `calc_spatial_hourly_v65.py` | `spatial_hourly_v65.csv` |
-| `calc_truth_coverage_v65.py` | `truth_coverage_v65.csv` |
-| `gen_scoreboard_table_v65.py` | `scoreboard_v65.csv` / `scoreboard_v65_rows.tex` (Table 3) |
+| `calc_annual_monthly_v65.py` | `annual_monthly_v66.csv` |
+| `calc_spatial_hourly_v65.py` | `spatial_hourly_v66.csv` |
+| `calc_truth_coverage_v65.py` | `truth_coverage_v66.csv` |
+| `gen_scoreboard_table_v66.py` | `scoreboard_v66.csv` / `scoreboard_v66_rows.tex` (Table 5) |
 | `build_level_v66.py` | `station_levels_v66.csv` (5,950 substations) / `level_model_v66.json` |
 | `check_method_numbers.py` | No output. A check that compares the numbers in method §3.4 against the JSON above |
 
 ### About `build_level_v66.py`
 
-It is **the canonical generator for item ② of the methods handbook (手法書), the net-flow level**, and succeeds
+It is **the canonical generator for item ② of the methods handbook, the net-flow level**, and succeeds
 `p0_phantom_lf.py` (v6.5, DB required). It differs in only three ways; everything else keeps the definitional scope exactly.
 
 1. The level equation drops the operating probability: `L = C × λ_a`
@@ -39,7 +41,7 @@ The Okinawa anchor based on officially published load has been dropped.
 These values came from running `p0_phantom_lf.py` on the frozen DB, and the offline layer alone yields the same numbers.
 If the definitional scope drifts, the asserts fail.
 
-`check_method_numbers.py` checks the 18 numbers embedded in the prose of §3.4 against the JSON.
+`check_method_numbers.py` checks the numbers embedded in the prose of §3.4 against the JSON.
 While only the core tables were guarded, a hand-copied "national median 19MW" (actually Okinawa's median) stayed wrong
 for a long time. **The generator's output is correct and the text gets fixed. Never the other way round.**
 
@@ -57,9 +59,8 @@ for a long time. **The generator's output is correct and the text gets fixed. Ne
 | `export_offline.py` | Generator of the offline layer itself (from the frozen DB) |
 | `repair_manifest.py` | Repairs `MANIFEST.json` |
 
-**Caution.** Monthly CV (raw/harm) and Spatial r in Table 3 come not from the reimplementations above but from
-**the canonical results of record**: `results/frozen_inputs/examiner_harmonized_fy2024.csv` and
-`code/engine/analysis/unified/out/p3_meti_spatial.csv`, frozen inputs that are not regenerated.
+**Caution.** Monthly CV (raw and harmonized) and Spatial r in Table 5 come not from the reimplementations above but from
+**the canonical results of record**: `examiner_harmonized_fy2024_v66.csv` and `p3_meti_spatial_v66.csv`, frozen inputs that are not regenerated.
 The reimplemented values do not match the canonical ones (weights of 0.10 to 0.61 against 0.30 to 0.75).
 **Never judge the text against the reimplemented values.**
 
@@ -68,10 +69,10 @@ The reimplemented values do not match the canonical ones (weights of 0.10 to 0.6
 | Script | Output | Notes |
 |---|---|---|
 | `clean_truth_and_recompute.py` | `results/micro/v65_micro_clean.csv` and others | Applies the admission test. 1,249 → 1,216 |
-| `recompute_all_clean.py` | `results/micro/v65_clean_all.json` | **Canonical output for Table 1, Table 2 and the benchmark-noise floor**. 1,216 substations after cleaning |
+| `recompute_all_clean.py` | `results/micro/v66_clean_all.json` | **Canonical output for Tables 3 and 4 and the benchmark-noise floor**. 1,216 substations after cleaning |
 | `baselines_and_ci.py` | `results/micro/v65_*_pretest.csv` | Diagnostics on the 1,249 substations **before the admission test**. Not cited in the text |
 | `check_saturation_and_hc.py` | `v65_saturation_check.csv` / `v65_hc_join_diag.csv` | Saturation rate and match against available connection capacity (3,443 substations, 21 substations) |
-| `gate_sensitivity.py` | `v65_gate_sensitivity.csv` | Sensitivity of the §4.1 acceptance thresholds (89→110→62 / 187→149→214) |
+| `gate_sensitivity.py` | `v65_gate_sensitivity.csv` | Class-limit sensitivity on the v6.5 level. Superseded by `gate_sensitivity_v66.py`, whose two-class result is §5.4 of the paper |
 | `build_ledger_whitelist_v65.py` | `results/numbers/ledger_whitelist_v65.csv` | Whitelist for substation-list coverage (offline layer only, no DB) |
 | `gen_headroom_v65.py` | `v65_headroom.csv` (reverse-flow and load margins); its legacy map goes to `logs/figs_intermediate/fig_maps3_legacy.pdf` and no longer overwrites Fig. 5 | Needs the whitelist |
 | `regen_fig_examiner2.py` | `fig_examiner2.pdf` (Fig. 3, the single floor-test panel) | Does not rewrite the tex |
@@ -142,19 +143,23 @@ confirm that TEPCO FY2024 in `lab_data.estimated_demand` is back to **12,395,400
 
 ## Figure dependency chains
 
+The figures of the paper are the `_v66` files. Each generator reads the estimate named by `PAPER_EST_FILE` or the
+v6.6 result files, and writes a `_v66` figure.
+
 ```
-Fig. 2  clean_truth_and_recompute.py → v65_micro_clean.csv (1,216 substations) → regen_fig_series4.py
-Fig. 3  clean_truth_and_recompute.py → recompute_all_clean.py → v65_floor_monthly.csv, v65_clean_all.json → regen_fig_examiner2.py
-Fig. 4  scoreboard_v65.csv → gen_fig_validation_v65.py
-Fig. 5  build_ledger_whitelist_v65.py → ledger_whitelist_v65.csv → gen_headroom_v65.py → v65_headroom.csv → gen_fig_maps_v65.py
+Fig. 2  clean_truth_and_recompute.py -> v66_micro_clean.csv (1,216 substations) -> regen_fig_series4.py -> fig_series4_v66.pdf
+Fig. 3  clean_truth_and_recompute.py -> recompute_all_clean.py -> v66_clean_all.json -> regen_fig_examiner2.py -> fig_examiner2_v66.pdf
+Fig. 4  scoreboard_v66.csv -> gen_fig_validation_v65.py -> fig_validation_v66.pdf
+Fig. 5  build_ledger_whitelist_v65.py -> ledger_whitelist_v66.csv -> gen_headroom_v65.py -> v66_headroom.csv -> gen_fig_maps_v65.py -> fig_maps3_v66.pdf
+Fig. S1 e16_pv_split_v66.py -> gen_fig_pv_split_v66.py -> fig_pv_split_v66.pdf
 Fig. 1  TikZ inside the text. No script
 ```
 
-**Fig. 2 was brought in line with v6.5 on 2026-07-29.** The published version had been drawn from v6.3-era per-substation metrics.
-When it was rebuilt, the evaluation set also moved to the 1,216 substations **after** the admission test (it had been the 1,249 before the test,
-so the caption "over all evaluated stations" disagreed with the evaluation set in the text). The three boxes in panel (d)
-correspond to the 75 / 169 / 972 substations of Table 1.
-**The choice of representative substations was fixed too.** It used to pick the substation closest to its class's median correlation and ignored APE.
-The APE shown in the panels therefore drifted from the medians in Table 1 (18.4/18.3/22.5), and at one point (b) showed 28%.
-It now adds the condition "APE also within ±5pt of the class median", and the panels show 15 / 19 / 18%, consistent with Table 1.
-If a class has no substation that qualifies, it falls back automatically to the old rule (exclude the top 10%).
+**Two classes, not three.** The measured-shape class was merged into the transferred-shape class by criterion F in the
+v6.6 rerun, so every figure and table now shows Class 1 (nodal balance) and Class 2 (transferred shape). Panel (c) of
+Fig. 2 has two boxes, for the 66 and the 1,150 evaluated substations of Table 3, not the three of the v6.5 figure.
+
+**A trap the v6.5 figure left behind.** The representative substation of each class used to be chosen by correlation
+alone, so the annual level error shown in a panel could sit far from the class median; one panel once showed 28 %
+against a median of 22.5 %. The rule now also requires the level error to lie within 5 percentage points of the class
+median, and falls back to the old rule when no substation qualifies.
